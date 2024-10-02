@@ -21,7 +21,7 @@ class Test extends Phaser.Scene {
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
         //set up player
-        this.player = new Player(this, game.config.width/2, game.config.height/2, 'player').setOrigin(0.5, 0)
+        this.player = new Player(this, game.config.width/2, game.config.height/2, 'player').setOrigin(0.5, 0.5)
 
     }
 

@@ -1,0 +1,2 @@
+remember, right click index and live server
+this is how you dont get CORS'd
