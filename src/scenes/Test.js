@@ -11,6 +11,7 @@ class Test extends Phaser.Scene {
     preload() {
         //load images
         this.load.image('player', './assets/player.png')
+        this.load.image('enemy', './assets/enemy.png')
     }
 
     create() {
@@ -21,7 +22,9 @@ class Test extends Phaser.Scene {
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
         //set up player
-        this.player = new Player(this, game.config.width/2, game.config.height/2, 'player').setOrigin(0.5, 0.5)
+        this.player = new Player(this, game.config.width/20, game.config.height/2, 'player').setOrigin(0.5, 0.5)
+        //set up enemy
+        this.enemy = new Enemy(this, game.config.width*19/20, game.config.height/2, 'enemy').setOrigin(0.5, 0.5)
 
     }
 
