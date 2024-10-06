@@ -1,2 +1,9 @@
 remember, right click index and live server
 this is how you dont get CORS'd
+
+notes for hitbox and hit tracking
+overlap, each attack is given an id number
+id number counts up until x, then loops
+each hitbox will know its parents id
+each enemy will remember which attack instances they got hit with (store the id number)
+on overlap: check id number, if new, take hit and add to remembered ids. otherwise pass
