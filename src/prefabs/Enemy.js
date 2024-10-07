@@ -1,5 +1,5 @@
 class Enemy extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, pushForce = 0, pushSpeed = 0) {
+    constructor(scene, x, y, texture, frame, health, pushForce = 0, pushSpeed = 0) {
         super(scene, x, y, texture, frame)
         //add to scene
         scene.add.existing(this);
@@ -8,6 +8,8 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.scene = scene
 
         //set up parameters
+        this.maxHealth = health
+        this.currentHealth = health
         this.moveSpeed = 500
         this.moveForceX = 10
         this.xInput = 0
@@ -15,9 +17,12 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         this.pushForce = pushForce
         this.pushSpeed = pushSpeed
+
+        this.rememberedHits = new Set([])
     }
 
-    update(dt) {
+    update() {
+        let dt = this.scene.game.loop.delta
         this.xInput = Math.abs(this.scene.player.x - this.x) / (this.scene.player.x - this.x)
         this.xInput = 0
         this.targetVelocity = this.xInput * this.moveSpeed
@@ -31,5 +36,8 @@ class Enemy extends Phaser.GameObjects.Sprite {
         
         this.direction = (this.xInput == 0) ? this.direction: this.xInput
 
+        if(this.currentHealth < 1) {
+            this.destroy()
+        }
     }
 }
