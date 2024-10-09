@@ -1,4 +1,4 @@
-class Test extends Phaser.Scene {
+class Play extends Phaser.Scene {
     constructor() {
         super('testScene')
         console.log('TestScene: constructor')

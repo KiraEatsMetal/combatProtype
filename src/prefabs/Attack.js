@@ -10,10 +10,10 @@ class Attack extends Phaser.GameObjects.Sprite {
         this.power = power
         this.id = id
         this.scene = scene
-        this.lifetime = 150
+        this.lifetime = 100
         this.lived = 0
 
-        console.log('attack created')
+        //console.log('attack created')
     }
 
     update() {
@@ -22,7 +22,12 @@ class Attack extends Phaser.GameObjects.Sprite {
         this.x = this.player.x + (this.player.width + this.width)/2 * this.player.direction
         this.body.setVelocityX(this.player.body.velocity.x)
         if(this.lived > this.lifetime) {
-            this.destroy()
+            this.end('idle')
         }
+    }
+
+    end(state) {
+        this.player.state = state
+        this.destroy()
     }
 }
