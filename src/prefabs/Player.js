@@ -5,38 +5,45 @@ class Player extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        //set up parameters
-        this.moveSpeed = 1000
-        this.moveForceX = 10
+        this.scene = scene
+
+        //set movement control and input axis
         this.xInput = 0
         this.targetVelocity = 0
 
-        //collision parameters
+        //entity collision parameters
         this.pushForce = 40
         this.pushSpeed = 600
 
         //state and facing direction
         this.direction = 1
         this.state = 'idle'
-        this.scene = scene
+        
+        //universal defence parameters
+        this.defenceCool = 0
+
+        //universal attack parameters
+        this.attackId = 0
+        this.attackCool = 0
+        
+        /*
+        CONFIGURABLE/CHANGABLE PARAMS BELOW, UNIVERSAL PARAMS ABOVE
+        */
+
+        //initial movement parameters
+        this.moveSpeed = 1000
+        this.moveForceX = 10
 
         //defensive mode
         this.defenceOption = 'dodge'
 
         //initial defence params
-        this.dodgeDistance = 100
         this.defenceCooldown = 500
-        this.defenceCool = 0
         this.defenceDuration = 50
 
         //initial attack parameters
-        this.attackId = 0
         this.attackCooldown = 300
-        this.attackCool = 0
         this.attackPower = 3
-
-        console.log('created player')
-        console.log(texture)
     }
 
     update(dt) {
@@ -44,7 +51,6 @@ class Player extends Phaser.GameObjects.Sprite {
         this.defenceCool = Math.max(0, this.defenceCool - dt)
         //cooldown attack
         this.attackCool = Math.max(0, this.attackCool - dt)
-        //console.log(this.defenceCool)
 
         //still modifier lowers the force applied when not actively moving, can be overridden to act as a force mult: ex: for a strong dash
         let stillModifier = (this.xInput == 0) ? 0.5: 1
@@ -87,6 +93,5 @@ class Player extends Phaser.GameObjects.Sprite {
         let attack = new Attack(this.scene, this.x + this.width * this.direction, this.y, this, 3, this.attackId)
         this.scene.playerAttackGroup.add(attack)
         this.attackId += 1
-        //console.log('attacked')
     }
 }

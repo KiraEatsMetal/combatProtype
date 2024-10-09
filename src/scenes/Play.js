@@ -1,7 +1,7 @@
 class Play extends Phaser.Scene {
     constructor() {
         super('testScene')
-        console.log('TestScene: constructor')
+        //console.log('TestScene: constructor')
     }
 
     init() {
@@ -43,8 +43,8 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.playerAttackGroup, this.enemyGroup, this.handleAttackOverlap, null, this)
 
         //debug
-        console.log(this)
-        console.log(this.game.loop.delta)
+        //console.log(this)
+        //console.log(this.game.loop.delta)
     }
 
     update(timestep, dt) {
@@ -52,11 +52,11 @@ class Play extends Phaser.Scene {
     }
 
     handleCollision() {
-        console.log('collide')
+        //collision does not let things overlap, could be used for running into a shield?
+        //console.log('collide')
     }
 
     handleBodyOverlap(player, enemy) {
-        //console.log('overlap')
         let dt = this.game.loop.delta
         let xDifference = player.x - enemy.x
         let pushDir = Math.abs(xDifference) / xDifference
@@ -79,14 +79,12 @@ class Play extends Phaser.Scene {
     }
 
     handleAttackOverlap(attack, enemy) {
-        //console.log(enemy)
-        //console.log(attack)
         if(enemy.rememberedHits.has(attack.id)) {
-            console.log('skipping hit')
+            //skip this hit
         } else {
+            //new hit, take the damage
             enemy.currentHealth -= attack.power
             enemy.rememberedHits.add(attack.id)
-            console.log('new hit')
         }
     }
 }

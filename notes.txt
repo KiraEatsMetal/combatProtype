@@ -7,3 +7,16 @@ id number counts up until x (maybe 64?), then loops
 each hitbox will know its parents id
 each enemy will remember which attack instances they got hit with (store the id number)
 on overlap: check id number, if new, take hit and add to remembered ids. otherwise pass
+
+gunstar heroes: look at it
+bullet styles, mix and match
+red and green combine to make something wildly different
+
+arm shield
+art style
+assasinations, variety comes from how terrain forces you to interact with enemies and loadout variety
+traversal is important
+
+mmaybe move terrain up so you can tune combat around it?
+most important part is limb swapping
+EVERYTHING should be in service of limb swapping

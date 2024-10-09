@@ -13,7 +13,7 @@ class Attack extends Phaser.GameObjects.Sprite {
         this.lifetime = 100
         this.lived = 0
 
-        //console.log('attack created')
+        //console.log('attack created: power, id, duration:: ' + this.power + ", " + this.id + ", " + this.lifetime)
     }
 
     update() {
