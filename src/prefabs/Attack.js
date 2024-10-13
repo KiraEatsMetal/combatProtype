@@ -1,15 +1,18 @@
 class Attack extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, player, power, id) {
+    constructor(scene, x, y, player, power, direction, id) {
         super(scene, x, y, 'attack')
 
         //add to scene
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        //parameters
+        //references
         this.player = player
+        this.scene = scene
+
+        //parameters
         this.power = power
         this.id = id
-        this.scene = scene
+        this.direction = direction
         this.lifetime = 100
         this.lived = 0
 

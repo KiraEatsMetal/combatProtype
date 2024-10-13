@@ -23,9 +23,9 @@ class Play extends Phaser.Scene {
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
         //set up enemy
-        let enemy = new Enemy(this, game.config.width*10/20, game.config.height/2, 'enemy', null, 7, 80, 300).setOrigin(0.5, 0.5)
+        let enemy = new Enemy(this, game.config.width*10/20, game.config.height/2, 'enemy', null, 7, 80, 300)
         //set up player
-        this.player = new Player(this, game.config.width/20, game.config.height/2, 'player').setOrigin(0.5, 0.5)
+        this.player = new Player(this, game.config.width/20, game.config.height/2, 'player', null, 10, 40, 600)
 
         //collision
 
@@ -83,7 +83,8 @@ class Play extends Phaser.Scene {
             //skip this hit
         } else {
             //new hit, take the damage
-            enemy.currentHealth -= attack.power
+            enemy.approachVelocity('x', 1500 * attack.direction, 1000)
+            enemy.changeHealth(-attack.power)
             enemy.rememberedHits.add(attack.id)
         }
     }

@@ -1,6 +1,23 @@
-class Player extends BaseEntity {
-    constructor(scene, x, y, texture, frame, health, pushForce = 0, pushSpeed = 0) {
-        super(scene, x, y, texture, frame, health, pushForce, pushSpeed)
+class Player extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, texture, frame) {
+        super(scene, x, y, texture, frame)
+        //add to scene
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+
+        this.scene = scene
+
+        //set movement control and input axis
+        this.xInput = 0
+        this.targetVelocity = 0
+
+        //entity collision parameters
+        this.pushForce = 40
+        this.pushSpeed = 600
+
+        //state and facing direction
+        this.direction = 1
+        this.state = 'idle'
         
         //universal defence parameters
         this.defenceCool = 0
@@ -82,5 +99,14 @@ class Player extends BaseEntity {
         let attack = new Attack(this.scene, this.x + this.width * this.direction, this.y, this, 3, this.direction, this.attackId)
         this.scene.playerAttackGroup.add(attack)
         this.attackId += 1
+    }
+
+    approachVelocity(axis, targetVelocity, force) {
+        let finalVelocity = Math.max(this.body.velocity[axis] - force, Math.min(targetVelocity, this.body.velocity[axis] + force))
+        if(axis = 'x') {
+            this.body.setVelocityX(finalVelocity)
+        } else {
+            this.body.setVelocityY(finalVelocity)
+        }
     }
 }
