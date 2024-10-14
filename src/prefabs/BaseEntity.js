@@ -54,7 +54,12 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
     }
 
     approachVelocity(axis, targetVelocity, force) {
-        let finalVelocity = Math.max(this.body.velocity[axis] - force, Math.min(targetVelocity, this.body.velocity[axis] + force))
+        let finalVelocity
+        if(this.body != null) {
+            finalVelocity = Math.max(this.body.velocity[axis] - force, Math.min(targetVelocity, this.body.velocity[axis] + force))
+        } else {
+            return
+        }
         if(axis = 'x') {
             this.body.setVelocityX(finalVelocity)
         } else {

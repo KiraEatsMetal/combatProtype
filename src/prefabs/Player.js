@@ -77,9 +77,9 @@ class Player extends BaseEntity {
         }
         
         let force = this.moveForceX * stillModifier * dt
-        console.log('going')
+        //console.log('going')
         this.approachVelocity('x', this.targetVelocity, force)
-        console.log('gone')
+        //sconsole.log('gone')
 
         this.direction = (this.xInput == 0) ? this.direction: this.xInput
     }

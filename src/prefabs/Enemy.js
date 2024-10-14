@@ -26,5 +26,7 @@ class Enemy extends BaseEntity {
         new ProjectileBase(this.scene, this.arm.x, this.arm.y, 'bullet', null, this, 3, 1500, this.direction, Phaser.Math.RND.integerInRange(0, 255))
         console.log('attacked')
         this.scene.time.delayedCall(3000, this.attack, null, this)
+        //when the enemy dies, this has already been queued to be called in the future
+        //this bugs out because 'this' does not exist since its been killed
     }
 }
