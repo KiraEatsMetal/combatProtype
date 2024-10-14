@@ -13,6 +13,8 @@ class Play extends Phaser.Scene {
         this.load.image('player', './assets/player.png')
         this.load.image('enemy', './assets/enemy.png')
         this.load.image('attack', './assets/attack.png')
+        this.load.image('arm', './assets/arm.png')
+        this.load.image('bullet', './assets/bullet.png')
     }
 
     create() {
@@ -36,10 +38,14 @@ class Play extends Phaser.Scene {
         this.enemyGroup = this.add.group({
             runChildUpdate: true
         })
+        this.enemyAttackGroup = this.add.group({
+            runChildUpdate: true
+        })
 
         this.enemyGroup.add(enemy)
 
         this.physics.add.overlap(this.player, this.enemyGroup, this.handleBodyOverlap, null, this)
+        this.physics.add.overlap(this.enemyAttackGroup, this.player, this.handleEnemyAttackOverlap, null, this)
         this.physics.add.overlap(this.playerAttackGroup, this.enemyGroup, this.handleAttackOverlap, null, this)
 
         //debug
@@ -62,8 +68,6 @@ class Play extends Phaser.Scene {
         let pushDir = Math.abs(xDifference) / xDifference
         //how deep into the enemy is the edge of the player?
         let overlapAmount = Math.max(-1, 0.5 - (Math.abs(xDifference) - player.width/2) / (enemy.width))
-        //overlapAmount = overlapAmount ** 1
-        //console.log(overlapAmount)
 
         //enemy pushes player
         let pushForce = enemy.pushForce
@@ -86,6 +90,19 @@ class Play extends Phaser.Scene {
             enemy.approachVelocity('x', 1500 * attack.direction, 1000)
             enemy.changeHealth(-attack.power)
             enemy.rememberedHits.add(attack.id)
+        }
+    }
+
+    handleEnemyAttackOverlap(attack, player) {
+        if(player.rememberedHits.has(attack.id)) {
+            //skip this hit
+            console.log('player hit skipped')
+        } else {
+            //new hit, take the damage
+            let direction = (attack.x > player.x) ? -1: 1
+            player.approachVelocity('x', 1500 * direction, 1000)
+            player.changeHealth(-attack.power)
+            player.rememberedHits.add(attack.id)
         }
     }
 }

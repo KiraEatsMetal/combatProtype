@@ -2,8 +2,8 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame, health, pushForce = 0, pushSpeed = 0) {
         super(scene, x, y, texture, frame)
         //add to scene
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
+        scene.add.existing(this)
+        scene.physics.add.existing(this)
 
         this.scene = scene
 
@@ -40,7 +40,6 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
     update() {
         let dt = this.scene.game.loop.delta
         //this.xInput = (this.scene.player.x - this.x > 0) ? 1: -1
-        this.xInput = 0
         this.targetVelocity = this.xInput * this.moveSpeed
 
         //still modifier lowers the force applied when not actively moving
@@ -49,6 +48,9 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
         let force = this.moveForceX * stillModifier * dt
         this.approachVelocity('x', this.targetVelocity, force)
         this.direction = (this.xInput == 0) ? this.direction: this.xInput
+        
+        let flipped = (this.direction == 1) ? false: true
+        this.setFlipX(flipped)
     }
 
     approachVelocity(axis, targetVelocity, force) {
