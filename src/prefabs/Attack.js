@@ -1,12 +1,17 @@
 class Attack extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, player, power, direction, id) {
+        //console.log('getting scene')
+        //console.log(scene)
         super(scene, x, y, 'attack')
+        scene.add.existing(this);
 
         //add to scene
-        scene.add.existing(this);
+        //console.log('got scene')
         scene.physics.add.existing(this);
         //references
+        //console.log('getting player')
         this.player = player
+        //console.log('got player')
         this.scene = scene
 
         //parameters
@@ -30,7 +35,9 @@ class Attack extends Phaser.GameObjects.Sprite {
     }
 
     end(state) {
+        //console.log('started end')
         this.player.state = state
         this.destroy()
+        //console.log('finished end')
     }
 }

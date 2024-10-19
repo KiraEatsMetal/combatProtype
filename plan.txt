@@ -1,0 +1,56 @@
+Week 2 leftovers: implement some player body parts, add enemy attack telegraph
+By week 3: begin making tiles, player and enemy assets, work on level map, work on sounds or get help with them
+By week 4: continue level map and art production, sounds
+By week 5: polish week
+
+
+today plan: arm rotation, laser, eat food
+
+arm: have a cooldown on how often the enemy can flip, make it take time
+each time the enemy flips, arm angle is brought halfway to straight down/straight up (mmmaybe?)
+otherwise arm rotates torwards aiming angle which is derived from aiming point
+
+laser: phaser doesn't have built in raycast
+particle line of x length
+grab angle of arm (remember to account for flipped or not) and turn into a normalized vec2
+scale vec2 by length of arm to get the start, scale by length of arm + laser length to get the end point
+
+how will you rotate the arm?
+
+we know how to smooth velocity, but can we use that for position?
+how: check the docs to see how angular velocity works and how much ang velo = how much rotation per frame
+then we can know how much x ang velo will travel in y frames
+we can also know 'i am at x angle, target is y, what ang velo will take me to that in one frame?
+
+ok so uhh there's no angular rotation for arcade sprites
+i guess implement your own??
+give variable self.angularVelocity
+every time you update the arm, change angle by angular velocity
+
+
+
+how to implement: each enemy will have a laser line
+use rotateAroundXY to rotate with the arm, use offset to translate the line
+rotatexy can easily grab the arm's angle, but how will you track change in position?
+could have variable oldxy, each frame: translate amount = oldxy - current x and y, then set oldxy to current x and y
+OR
+every frame recalculate the line's new position instead of trying to offset and rotate it, use setTo to set the line to those xy xy coords
+laser line will serve as the particle source like the stars in the endless runner
+
+
+
+
+how are we going to do player body parts?
+tree menu: pressing the change body part button will open a menu and stop player input
+use wads to navigate, body is middle, left right are left and right arm, down is legs, up is head
+press attack to select and dash to go back
+press body part menu key will close the menu
+upon selecting a body part, it should show a few body parts at random OR have a wheel you can scroll through with a and d
+
+set up state machine for the player
+have a state for menuing
+attack state
+walk state
+idle state
+pppprobably a hurt state?
+dash/bash state

@@ -13,7 +13,8 @@ class Arm extends Phaser.GameObjects.Sprite {
         this.owner = owner
 
         //arm parameters
-
+        this.angularVelocity = 0
+        this.armForce = 0
     }
 
     update(dt, direction, targetAngle) {
@@ -26,5 +27,22 @@ class Arm extends Phaser.GameObjects.Sprite {
         } else {
             this.setOrigin(this.rotatePoint[0], this.rotatePoint[1])
         }
+
+        this.setAngle(this.angle + this.angularVelocity)
+        let force = this.armForce * dt
+        this.approachAngle(targetAngle, 10, force)
+    }
+
+    approachAngle(targetAngle, maxAngularVelocity, force) {
+        //in degrees
+        //prefer strong tracking and overshoot potential to weaker tracking that doesn't overshoot
+        let angleDiff = targetAngle - this.angle
+
+        this.approachAngularVelocity(angleDiff, force)
+    }
+
+    approachAngularVelocity(targetAngularVelocity, force){
+        let finalAngularVelocity = Math.max(this.angularVelocity - force, Math.min(targetAngularVelocity, this.angularVelocity + force))
+        this.angularVelocity = finalAngularVelocity
     }
 }

@@ -52,7 +52,7 @@ class Player extends BaseEntity {
                     this.defenceCool = this.defenceCooldown
                 } else if(Phaser.Input.Keyboard.JustDown(keyATTACK) && this.attackCool == 0) {
                     this.state = 'attack'
-                    this.attack(this.attackPower, this.attackId)
+                    this.spawnMeleeAttack(this.attackPower, this.attackId)
                     this.attackCool = this.attackCooldown
                 }
             break;
@@ -84,9 +84,24 @@ class Player extends BaseEntity {
         this.direction = (this.xInput == 0) ? this.direction: this.xInput
     }
 
-    attack(power, attackId) {
-        let attack = new Attack(this.scene, this.x + this.width * this.direction, this.y, this, 3, this.direction, this.attackId)
-        this.scene.playerAttackGroup.add(attack)
-        this.attackId += 1
+    spawnMeleeAttack(power, attackId) {
+        //console.log('spawning melee attack')
+        if(this.scene){
+            this.attack = new Attack(this.scene, this.x + this.width * this.direction, this.y, this, 3, this.direction, this.attackId)
+            //console.log('spawned melee attack')
+            this.scene.playerAttackGroup.add(this.attack)
+            this.attackId += 1
+        }
+    }
+
+    stopMeleeAttack() {
+        if(this.attack) {
+            this.attack.destroy()
+        }
+    }
+    
+    die(){
+        this.stopMeleeAttack()
+        super.die()
     }
 }

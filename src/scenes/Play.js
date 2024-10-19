@@ -24,12 +24,22 @@ class Play extends Phaser.Scene {
         keyATTACK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J)
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
+        //temporary floor
+        let floor = this.add.rectangle(game.config.width/2, game.config.height*2/3, game.config.width, game.config.height/3, 0xffffff).setOrigin(0.5, 0)
+        this.physics.add.existing(floor)
+        floor.body.setImmovable(true)
+
         //set up enemy
         let enemy = new Enemy(this, game.config.width*10/20, game.config.height/2, 'enemy', null, 7, 80, 300)
         //set up player
         this.player = new Player(this, game.config.width/20, game.config.height/2, 'player', null, 10, 40, 600)
 
         //collision
+        this.collideGroundGroup = this.add.group()
+        this.collideGroundGroup.add(this.player)
+        this.collideGroundGroup.add(enemy)
+
+        this.physics.add.collider(this.collideGroundGroup, floor, this.handleCollision, null, this)
 
         //overlap
         this.playerAttackGroup = this.add.group({
@@ -96,7 +106,7 @@ class Play extends Phaser.Scene {
     handleEnemyAttackOverlap(attack, player) {
         if(player.rememberedHits.has(attack.id)) {
             //skip this hit
-            console.log('player hit skipped')
+            //console.log('player hit skipped')
         } else {
             //new hit, take the damage
             let direction = (attack.x > player.x) ? -1: 1
