@@ -47,9 +47,6 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
         //movement
         let force = this.moveForceX * stillModifier * dt
         this.approachVelocity('x', this.targetVelocity, force)
-        this.direction = (this.xInput == 0) ? this.direction: this.xInput
-        let flipped = (this.direction == 1) ? false: true
-        this.setFlipX(flipped)
     }
 
     approachVelocity(axis, targetVelocity, force) {

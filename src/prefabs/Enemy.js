@@ -7,12 +7,15 @@ class Enemy extends BaseEntity {
     }
 
     update() {
-        this.direction = (this.x - this.scene.player.x > 0) ? -1: 1
+        let targetDirection = (this.x - this.scene.player.x > 0) ? -1: 1
+        if(targetDirection != this.direction) {
+            this.flip()
+        }
         //console.log(this.direction)
 
         let dt = this.scene.game.loop.delta
         let aimAngle = this.getAimAngle(this.scene.player, this.arm)
-        aimAngle = (this.direction == 1) ? aimAngle: -aimAngle
+        //aimAngle = (this.direction == 1) ? aimAngle: -aimAngle
         this.arm.update(dt, this.direction, aimAngle)
 
         super.update()
@@ -24,7 +27,9 @@ class Enemy extends BaseEntity {
     }
 
     attack() {
-        new ProjectileBase(this.scene, this.arm.x, this.arm.y, 'bullet', null, this, 3, 1500, this.direction, Phaser.Math.RND.integerInRange(0, 255))
+        let aimAngle = this.getAimAngle(this.scene.player, this.arm)
+        console.log(aimAngle)
+        new ProjectileBase(this.scene, this.arm.x, this.arm.y, 'bullet', null, this, 3, 1500, aimAngle, Phaser.Math.RND.integerInRange(0, 255))
         //console.log('attacked')
         this.scene.time.delayedCall(3000, this.attack, null, this)
         //when the enemy dies, this has already been queued to be called in the future
@@ -33,10 +38,16 @@ class Enemy extends BaseEntity {
 
     getAimAngle(target, arm) {
         let coords = new Phaser.Math.Vector2(target.x - arm.x, target.y - arm.y)
-        coords.normalize()
-        let angle = Math.asin(coords.y)
+        //coords.normalize()
+        let angle = Math.atan2(-coords.y, coords.x)
+        //console.log(Math.acos(coords.x), Math.asin(coords.y))
         angle = Phaser.Math.RadToDeg(angle)
         //console.log(angle)
         return angle
+    }
+
+    flip() {
+        this.arm.flip()
+        super.flip()
     }
 }
