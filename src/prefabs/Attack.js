@@ -28,7 +28,8 @@ class Attack extends Phaser.GameObjects.Sprite {
         let dt = this.scene.game.loop.delta
         this.lived += dt
         this.x = this.player.x + (this.player.width + this.width)/2 * this.player.direction
-        this.body.setVelocityX(this.player.body.velocity.x)
+        this.y = this.player.y
+        this.body.setVelocityY(this.player.body.velocity.x, this.player.body.velocity.y)
         if(this.lived > this.lifetime) {
             this.end('idle')
         }

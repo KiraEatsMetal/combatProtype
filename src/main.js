@@ -22,4 +22,4 @@ let config = {
 let game = new Phaser.Game(config);
 
 //define keys
-let keyLEFT, keyRIGHT, keyATTACK, keyDODGE
+let keyLEFT, keyRIGHT, keyJUMP, keyCROUCH, keyATTACK, keyDODGE

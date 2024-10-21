@@ -15,17 +15,20 @@ class Play extends Phaser.Scene {
         this.load.image('attack', './assets/attack.png')
         this.load.image('arm', './assets/arm.png')
         this.load.image('bullet', './assets/bullet.png')
+        this.load.image('laserParticle', './assets/laserParticle.png')
     }
 
     create() {
         //keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        keyJUMP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
+        keyCROUCH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
         keyATTACK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J)
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
         //temporary floor
-        let floor = this.add.rectangle(game.config.width/2, game.config.height*2/3, game.config.width, game.config.height/3, 0xffffff).setOrigin(0.5, 0)
+        let floor = this.add.rectangle(game.config.width/2, game.config.height*2/3, game.config.width * 2, game.config.height/3, 0xffffff).setOrigin(0.5, 0)
         this.physics.add.existing(floor)
         floor.body.setImmovable(true)
 

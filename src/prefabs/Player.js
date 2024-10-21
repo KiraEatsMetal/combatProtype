@@ -16,6 +16,7 @@ class Player extends BaseEntity {
         //initial movement parameters
         this.moveSpeed = 1000
         this.moveForceX = 10
+        this.jumpForce = 2000
 
         //defensive mode
         this.defenceOption = 'dodge'
@@ -41,6 +42,9 @@ class Player extends BaseEntity {
 
         switch(this.state) { //this part is placeholder for preventing movement while attacking
             case 'idle':
+                if(Phaser.Input.Keyboard.JustDown(keyJUMP)) {
+                    this.jump()
+                }
                 this.xInput = -keyLEFT.isDown + keyRIGHT.isDown
                 this.targetVelocity = this.xInput * this.moveSpeed
         
@@ -103,5 +107,9 @@ class Player extends BaseEntity {
     die(){
         this.stopMeleeAttack()
         super.die()
+    }
+
+    jump() {
+        this.approachVelocity('y', -1100, this.jumpForce)
     }
 }

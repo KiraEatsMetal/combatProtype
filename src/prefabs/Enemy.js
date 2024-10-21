@@ -1,8 +1,7 @@
 class Enemy extends BaseEntity {
     constructor(scene, x, y, texture, frame, health, pushForce = 0, pushSpeed = 0) {
         super(scene, x, y, texture, frame, health, pushForce, pushSpeed)
-        this.arm = new Arm(scene, this, this.width/4, -this.height/4, 'arm', this.direction, [0, 0])
-        //console.log(this.arm)
+        this.arm = new Arm(scene, this, this.width/4, -this.height/4, 'arm', this.direction, [0, 0], this.width * 4, 'laserParticle')
 
         this.scene.time.delayedCall(1000, this.attack, null, this)
     }

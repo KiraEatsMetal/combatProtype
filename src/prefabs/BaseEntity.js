@@ -4,7 +4,7 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
         //add to scene
         scene.add.existing(this)
         scene.physics.add.existing(this)
-        this.body.setGravity(0, 2000)
+        this.body.setGravity(0, 4000)
 
         this.scene = scene
 
@@ -58,7 +58,7 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
             return
         }
         finalVelocity = Math.max(this.body.velocity[axis] - force, Math.min(targetVelocity, this.body.velocity[axis] + force))
-        if(axis = 'x') {
+        if(axis == 'x') {
             this.body.setVelocityX(finalVelocity)
         } else {
             this.body.setVelocityY(finalVelocity)
