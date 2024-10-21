@@ -27,9 +27,9 @@ class Enemy extends BaseEntity {
     }
 
     attack() {
-        let aimAngle = this.getAimAngle(this.scene.player, this.arm)
+        let aimAngle = (this.arm.flipX) ? 180-this.arm.angle: -this.arm.angle
         console.log(aimAngle)
-        new ProjectileBase(this.scene, this.arm.x, this.arm.y, 'bullet', null, this, 3, 1500, aimAngle, Phaser.Math.RND.integerInRange(0, 255))
+        new ProjectileBase(this.scene, this.arm.x, this.arm.y, 'bullet', null, this, 3, 2000, aimAngle, Phaser.Math.RND.integerInRange(0, 255))
         //console.log('attacked')
         this.scene.time.delayedCall(3000, this.attack, null, this)
         //when the enemy dies, this has already been queued to be called in the future

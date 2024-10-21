@@ -14,7 +14,7 @@ class Arm extends Phaser.GameObjects.Sprite {
 
         //arm parameters
         this.angularVelocity = 0
-        this.armForce = 0.2
+        this.armForce = 0.1
 
         this.armLength = this.width * (1 - this.originX)
         this.laserLength = laserLength
@@ -58,10 +58,10 @@ class Arm extends Phaser.GameObjects.Sprite {
         this.setAngle(this.angle + this.angularVelocity)
         let force = this.armForce * dt
 
-        targetAngle = (flipped == false) ? -targetAngle: targetAngle
+        targetAngle = (flipped == false) ? -targetAngle: 180-targetAngle
         console.log(targetAngle)
         
-        this.approachAngle(targetAngle, 1, force)
+        this.approachAngle(targetAngle, 10, force)
         if(this.laserLine) {
             //adjusting laser angle since the raw arm angle is incorrect when flipped due to how flipx works
             this.laserAimAngle = (flipped == false) ? this.angle: 180 + this.angle
@@ -78,7 +78,14 @@ class Arm extends Phaser.GameObjects.Sprite {
     approachAngle(targetAngle, maxAngularVelocity, force) {
         //in degrees
         //prefer strong tracking and overshoot potential to weaker tracking that doesn't overshoot
-        let angleDiff = targetAngle - this.angle
+        targetAngle = this.clampAngle(targetAngle)
+        let armAngle = this.clampAngle(this.angle)
+
+        let angleDiff = targetAngle - armAngle
+
+        //from: https://stackoverflow.com/questions/1878907/how-can-i-find-the-smallest-difference-between-two-angles-around-a-point
+        angleDiff = this.clampAngle(angleDiff)
+
         let targetAngularVelocity = Math.max(-maxAngularVelocity, Math.min(angleDiff, maxAngularVelocity))
 
         this.approachAngularVelocity(targetAngularVelocity, force)
@@ -107,12 +114,25 @@ class Arm extends Phaser.GameObjects.Sprite {
         }
         let angleAdjust
         //console.log(this.angle)
+        let disruptForce = 10
         if(this.angle > 0) {
             angleAdjust = 90 - this.angle
+            this.approachAngularVelocity(100, disruptForce)
         } else {
             angleAdjust = -90 - this.angle
+            this.approachAngularVelocity(-100, disruptForce)
         }
         //console.log(angleAdjust)
         this.setAngle(this.angle + angleAdjust/2)
+    }
+
+    clampAngle(angle) {
+        while(angle > 180) {
+            angle -= 360
+        }
+        while(angle < -180) {
+            angle += 360
+        }
+        return angle
     }
 }

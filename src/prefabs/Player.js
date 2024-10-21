@@ -63,7 +63,7 @@ class Player extends BaseEntity {
             
             case 'attack':
                 this.xInput = 0
-                this.targetVelocity = this.direction * this.moveSpeed * 0.0
+                this.targetVelocity = this.direction * this.moveSpeed * 0.5
             break;
 
             case 'dodge':

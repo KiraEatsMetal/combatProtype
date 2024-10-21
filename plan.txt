@@ -62,3 +62,10 @@ normalize coords
 arc cos or arc tan coords
 boom, angle in radians, convert to degrees
 add 180 if flipped
+
+
+arm angles:
+target: -170
+angle: 160
+target - angle = -330
+20 = 
