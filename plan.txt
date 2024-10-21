@@ -54,3 +54,11 @@ walk state
 idle state
 pppprobably a hurt state?
 dash/bash state
+
+
+get player angle:
+let coords = player x and y - arm x and y
+normalize coords
+arc cos or arc tan coords
+boom, angle in radians, convert to degrees
+add 180 if flipped

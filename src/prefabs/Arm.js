@@ -14,13 +14,14 @@ class Arm extends Phaser.GameObjects.Sprite {
 
         //arm parameters
         this.angularVelocity = 0
-        this.armForce = 0
+        this.armForce = 0.2
+
+        this.armLength = this.width * (1 - this.originX)
+        this.laserLength = laserLength
 
         //laser
         if(laserLength > 0) {
-            console.log(laserLength)
-            
-            let armEndpoint = [this.x + this.width, this.y + this.height]
+            let armEndpoint = [this.x + this.armLength, this.y]
             this.laserLine = new Phaser.Geom.Line(armEndpoint[0], armEndpoint[1], armEndpoint[0] + laserLength * direction, armEndpoint[1])
 
             // set up particle emitter  
@@ -62,8 +63,14 @@ class Arm extends Phaser.GameObjects.Sprite {
         let force = this.armForce * dt
         this.approachAngle(targetAngle, 10, force)
         if(this.laserLine) {
-            Phaser.Geom.Line.Offset(this.laserLine, this.x - this.oldPos[0], this.y - this.oldPos[1])
-            Phaser.Geom.Line.RotateAroundXY(this.laserLine, this.x, this.y, Phaser.Math.DegToRad(10))
+            //adjusting laser angle since the raw arm angle is incorrect when flipped due to how flipx works
+            let laserAimAngle = (flipped == false) ? this.angle: this.angle + 180
+            
+            let laserDirection = [Math.cos(Phaser.Math.DegToRad(laserAimAngle)), Math.sin(Phaser.Math.DegToRad(laserAimAngle))]
+            let laserArmLength = (this.armLength + this.laserLength)
+            //console.log(laserDirection)
+            
+            this.laserLine.setTo(this.x + laserDirection[0] * this.armLength, this.y + laserDirection[1] * this.armLength, this.x + laserDirection[0] * laserArmLength, this.y + laserDirection[1] * laserArmLength)
         }
         this.oldPos = [this.x, this.y]
     }
@@ -74,6 +81,7 @@ class Arm extends Phaser.GameObjects.Sprite {
         let angleDiff = targetAngle - this.angle
 
         this.approachAngularVelocity(angleDiff, force)
+        //console.log(force)
     }
 
     approachAngularVelocity(targetAngularVelocity, force){
