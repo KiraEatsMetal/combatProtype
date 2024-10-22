@@ -28,64 +28,25 @@ class Player extends BaseEntity {
         //initial attack parameters
         this.attackCooldown = 300
         this.attackPower = 3
+
+        //state machine
+        this.stateMachine = new StateMachine('idle', {
+            idle: new IdleState(),
+            move: new MoveState(),
+            jump: new JumpState(),
+            attack: new AttackState(),
+            defend: new DefendState(),
+            die: new DieState()
+        }, [this.scene, this])
     }
 
     update(dt) {
-        //cooldown defensive ability
-        this.defenceCool = Math.max(0, this.defenceCool - dt)
-        //cooldown attack
-        this.attackCool = Math.max(0, this.attackCool - dt)
 
         //still modifier lowers the force applied when not actively moving, can be overridden to act as a force mult: ex: for a strong dash
-        let stillModifier = (this.xInput == 0) ? 0.5: 1
-        let flipped = false
+        //let flipped = false
 
-        switch(this.state) { //this part is placeholder for preventing movement while attacking
-            case 'idle':
-                if(Phaser.Input.Keyboard.JustDown(keyJUMP)) {
-                    this.jump()
-                }
-                this.xInput = -keyLEFT.isDown + keyRIGHT.isDown
-                this.targetVelocity = this.xInput * this.moveSpeed
-        
-                flipped = (this.direction == 1) ? false: true
-                this.setFlipX(flipped)
-                
-                if(Phaser.Input.Keyboard.JustDown(keyDODGE) && this.defenceCool == 0) {
-                    this.state = this.defenceOption
-                    this.defenceCool = this.defenceCooldown
-                } else if(Phaser.Input.Keyboard.JustDown(keyATTACK) && this.attackCool == 0) {
-                    this.state = 'attack'
-                    this.spawnMeleeAttack(this.attackPower, this.attackId)
-                    this.attackCool = this.attackCooldown
-                }
-            break;
-            
-            case 'attack':
-                this.xInput = 0
-                this.targetVelocity = this.direction * this.moveSpeed * 0.5
-            break;
-
-            case 'dodge':
-                this.targetVelocity = this.direction * this.moveSpeed * 2
-                stillModifier = 8
-                this.xInput = 0
-        
-                flipped = (this.direction == 1) ? false: true
-                this.setFlipX(flipped)
-
-                if(this.defenceCooldown - this.defenceCool > this.defenceDuration) {
-                    this.state = 'idle'
-                }
-            break;
-        }
-        
-        let force = this.moveForceX * stillModifier * dt
-        //console.log('going')
-        this.approachVelocity('x', this.targetVelocity, force)
-        //sconsole.log('gone')
-
-        this.direction = (this.xInput == 0) ? this.direction: this.xInput
+        this.stateMachine.step()
+        this.cooldown(dt)
     }
 
     spawnMeleeAttack(power, attackId) {
@@ -106,10 +67,164 @@ class Player extends BaseEntity {
     
     die(){
         this.stopMeleeAttack()
+        this.stateMachine.transition('die');
         super.die()
     }
 
     jump() {
         this.approachVelocity('y', -1100, this.jumpForce)
+    }
+
+    move(control, speedModifier, forceModifier, dt) {
+        //get player x inputs, set target speed
+        if(control) {
+            this.xInput = -keyLEFT.isDown + keyRIGHT.isDown
+        } else {
+            this.xInput = this.direction
+        }
+        this.targetVelocity = this.xInput * this.moveSpeed * speedModifier
+        
+        let force = this.moveForceX * forceModifier * dt
+        this.approachVelocity('x', this.targetVelocity, force)
+        this.direction = (this.xInput == 0) ? this.direction: this.xInput
+
+        let flipped = (this.direction == 1) ? false: true
+        this.setFlipX(flipped)
+    }
+
+    cooldown(dt) {
+        //cooldown defensive ability
+        this.defenceCool = Math.max(0, this.defenceCool - dt)
+        
+        //cooldown attack
+        this.attackCool = Math.max(0, this.attackCool - dt)
+    }
+}
+
+class IdleState extends State {
+    enter(scene, player) {
+
+    }
+
+    execute(scene, player) {
+        let dt = scene.game.loop.delta
+        player.move(true, 1, 0.5, dt)
+
+        //transition to move
+        if(player.xInput != 0) {
+            player.stateMachine.transition('move')
+        }
+        //transition to jump
+        if(Phaser.Input.Keyboard.JustDown(keyJUMP) && player.body.touching.down) {
+            player.stateMachine.transition('jump');
+        }
+
+        //transition to defence
+        if(Phaser.Input.Keyboard.JustDown(keyDODGE) && player.defenceCool == 0) {
+            player.stateMachine.transition('defend');
+        }
+        //transition to attack
+        if(Phaser.Input.Keyboard.JustDown(keyATTACK) && player.attackCool == 0) {
+            player.stateMachine.transition('attack');
+        }
+    }
+}
+
+class MoveState extends State {
+    enter(scene, player) {
+
+    }
+
+    execute(scene, player) {
+        let dt = scene.game.loop.delta
+        player.move(true, 1, 1, dt)
+
+        //transition to jump
+        if(Phaser.Input.Keyboard.JustDown(keyJUMP) && player.body.touching.down) {
+            player.stateMachine.transition('jump');
+        }
+
+        //transition to defence
+        if(Phaser.Input.Keyboard.JustDown(keyDODGE) && player.defenceCool == 0) {
+            player.stateMachine.transition('defend');
+        }
+        //transition to attack
+        if(Phaser.Input.Keyboard.JustDown(keyATTACK) && player.attackCool == 0) {
+            player.stateMachine.transition('attack');
+        }
+        
+        //transition to idle
+        if(player.xInput == 0) {
+            player.stateMachine.transition('idle');
+        }
+    }
+}
+
+class JumpState extends State {
+    enter(scene, player) {
+        player.jump()
+    }
+
+    execute(scene, player) {
+        let dt = scene.game.loop.delta
+        player.move(true, 1, 0.5, dt)
+
+        //transition to defence
+        if(Phaser.Input.Keyboard.JustDown(keyDODGE) && player.defenceCool == 0) {
+            player.stateMachine.transition('defend');
+        }
+        //transition to attack
+        if(Phaser.Input.Keyboard.JustDown(keyATTACK) && player.attackCool == 0) {
+            player.stateMachine.transition('attack');
+        }
+        
+        //transition to idle
+        if(true) {
+            player.stateMachine.transition('idle');
+        }   
+    }
+}
+
+class AttackState extends State {
+    enter(scene, player) {
+        player.spawnMeleeAttack(player.attackPower, player.attackId)
+        player.attackCool = player.attackCooldown
+    }
+
+    execute(scene, player) {
+        let dt = scene.game.loop.delta
+        player.move(false, 0.5, 1, dt)
+
+        if(player.attackCool == 0) {
+            player.stateMachine.transition('idle')
+        }
+    }
+}
+
+class DefendState extends State {
+    enter(scene, player) {
+        player.defenceCool = player.defenceCooldown
+    }
+
+    execute(scene, player) {
+        let dt = scene.game.loop.delta
+        player.move(false, 2, 8, dt)
+
+        let flipped = (player.direction == 1) ? false: true
+        player.setFlipX(flipped)
+
+        if(player.defenceCooldown - player.defenceCool > player.defenceDuration) {
+            player.stateMachine.transition('idle');
+        }        
+    }
+}
+
+class DieState extends State {
+    enter(scene, player) {
+
+    }
+
+    execute(scene, player) {
+
     }
 }

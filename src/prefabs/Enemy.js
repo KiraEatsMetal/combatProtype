@@ -28,9 +28,7 @@ class Enemy extends BaseEntity {
 
     attack() {
         let aimAngle = (this.arm.flipX) ? 180-this.arm.angle: -this.arm.angle
-        console.log(aimAngle)
         new ProjectileBase(this.scene, this.arm.x, this.arm.y, 'bullet', null, this, 3, 2000, aimAngle, Phaser.Math.RND.integerInRange(0, 255))
-        //console.log('attacked')
         this.scene.time.delayedCall(3000, this.attack, null, this)
         //when the enemy dies, this has already been queued to be called in the future
         //this bugs out because 'this' does not exist since its been killed
@@ -40,9 +38,7 @@ class Enemy extends BaseEntity {
         let coords = new Phaser.Math.Vector2(target.x - arm.x, target.y - arm.y)
         //coords.normalize()
         let angle = Math.atan2(-coords.y, coords.x)
-        //console.log(Math.acos(coords.x), Math.asin(coords.y))
         angle = Phaser.Math.RadToDeg(angle)
-        //console.log(angle)
         return angle
     }
 

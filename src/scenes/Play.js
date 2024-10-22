@@ -101,6 +101,7 @@ class Play extends Phaser.Scene {
         } else {
             //new hit, take the damage
             enemy.approachVelocity('x', 1500 * attack.direction, 1000)
+            enemy.approachVelocity('y', -1500, 400)
             enemy.changeHealth(-attack.power)
             enemy.rememberedHits.add(attack.id)
         }

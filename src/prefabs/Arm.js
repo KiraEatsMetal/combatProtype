@@ -46,7 +46,6 @@ class Arm extends Phaser.GameObjects.Sprite {
     }
 
     update(dt, direction, targetAngle) {
-        //this.flip()
         //stick with the body
         this.setPosition(this.owner.x + this.offset['x'] * direction, this.owner.y + this.offset['y'])
         this.body.setVelocity(this.owner.body.velocity['x'], this.owner.body.velocity['y'])
@@ -59,7 +58,7 @@ class Arm extends Phaser.GameObjects.Sprite {
         let force = this.armForce * dt
 
         targetAngle = (flipped == false) ? -targetAngle: 180-targetAngle
-        console.log(targetAngle)
+        //console.log(targetAngle)
         
         this.approachAngle(targetAngle, 10, force)
         if(this.laserLine) {
