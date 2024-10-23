@@ -86,8 +86,10 @@ class Player extends BaseEntity {
 
         super.move(speedModifier, forceModifier, dt)
 
-        let flipped = (this.direction == 1) ? false: true
-        this.setFlipX(flipped)
+        if(this.direction != this.xInput && this.xInput != 0) {
+            this.flip()
+        }
+        this.direction = (this.xInput == 0) ? this.direction: this.xInput
     }
 
     cooldown(dt) {
@@ -187,11 +189,12 @@ class PlayerAttackState extends State {
     enter(scene, player) {
         player.spawnMeleeAttack(player.attackPower, player.attackId)
         player.attackCool = player.attackCooldown
+        player.move(false, 2, 2, 16)
     }
 
     execute(scene, player) {
         let dt = scene.game.loop.delta
-        player.move(false, 0.5, 1, dt)
+        player.move(false, 0, 0.5, dt)
 
         if(player.attackCool == 0) {
             player.stateMachine.transition('idle')

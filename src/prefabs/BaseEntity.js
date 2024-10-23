@@ -82,10 +82,13 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
     }
 
     move(speedModifier, forceModifier, dt) {
+        //how to use:
+        /*
+        set xinput, then call this function
+        */
         this.targetVelocity = this.xInput * this.moveSpeed * speedModifier
         
         let force = this.moveForceX * forceModifier * dt
         this.approachVelocity('x', this.targetVelocity, force)
-        this.direction = (this.xInput == 0) ? this.direction: this.xInput
     }
 }

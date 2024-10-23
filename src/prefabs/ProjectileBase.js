@@ -19,8 +19,8 @@ class ProjectileBase extends Phaser.GameObjects.Sprite {
         this.lived = 0
 
         let aimNormal = [Math.cos(Phaser.Math.DegToRad(angle)), Math.sin(Phaser.Math.DegToRad(-angle))]
-        this.setAngle(angle)
-        console.log(aimNormal)
+        this.setAngle(-angle)
+        //console.log(aimNormal)
         this.body.setVelocityX(speed * aimNormal[0])
         this.body.setVelocityY(speed * aimNormal[1])
     }

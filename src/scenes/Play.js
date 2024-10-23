@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
         //temporary floor
-        let floor = this.add.rectangle(game.config.width/2, game.config.height*2/3, game.config.width * 2, game.config.height/3, 0xffffff).setOrigin(0.5, 0)
+        let floor = this.add.rectangle(game.config.width/2, game.config.height*2/3, game.config.width * 4, game.config.height/3, 0xffffff).setOrigin(0.5, 0)
         this.physics.add.existing(floor)
         floor.body.setImmovable(true)
 
@@ -60,10 +60,6 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.enemyGroup, this.handleBodyOverlap, null, this)
         this.physics.add.overlap(this.enemyAttackGroup, this.player, this.handleEnemyAttackOverlap, null, this)
         this.physics.add.overlap(this.playerAttackGroup, this.enemyGroup, this.handleAttackOverlap, null, this)
-
-        //debug
-        //console.log(this)
-        //console.log(this.game.loop.delta)
     }
 
     update(timestep, dt) {
