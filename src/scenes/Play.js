@@ -54,10 +54,14 @@ class Play extends Phaser.Scene {
         this.enemyAttackGroup = this.add.group({
             runChildUpdate: true
         })
+        this.enemySightGroup = this.add.group()
+        console.log(this.enemySightGroup)
 
         this.enemyGroup.add(enemy)
+        this.enemySightGroup.add(enemy.sightBox)
 
         this.physics.add.overlap(this.player, this.enemyGroup, this.handleBodyOverlap, null, this)
+        this.physics.add.overlap(this.player, this.enemySightGroup, this.handleSeenOverlap, null, this)
         this.physics.add.overlap(this.enemyAttackGroup, this.player, this.handleEnemyAttackOverlap, null, this)
         this.physics.add.overlap(this.playerAttackGroup, this.enemyGroup, this.handleAttackOverlap, null, this)
     }
@@ -91,6 +95,12 @@ class Play extends Phaser.Scene {
         enemy.body.setVelocityX(finalVelocity)
     }
 
+    handleSeenOverlap(player, sightBox) {
+        if(sightBox.owner.stateMachine.state == 'idle') {
+            sightBox.owner.stateMachine.transition('move')
+        }
+    }
+
     handleAttackOverlap(attack, enemy) {
         if(enemy.rememberedHits.has(attack.id)) {
             //skip this hit
@@ -98,6 +108,7 @@ class Play extends Phaser.Scene {
             //new hit, take the damage
             enemy.approachVelocity('x', 1500 * attack.direction, 1000)
             enemy.approachVelocity('y', -1500, 400)
+            enemy.stateMachine.transition('hurt')
             enemy.changeHealth(-attack.power)
             enemy.rememberedHits.add(attack.id)
         }

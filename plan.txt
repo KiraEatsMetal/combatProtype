@@ -21,8 +21,9 @@ dash/bash state
 
 enemy state machine
 states:
-idle/lookout
-purposefull move/approach/flee
+idle/lookout: turn around every so often, move a bit at half speed
+purposeful move/approach/flee
 take aim/unholstered: aim at player and walk backwards(or forwards, not likely) at half speed, transition to aimed after x time and/or? x angle closeness
 aimed: shoot at player, transition to take aim after x shots or? after aim broken
 hurt: breaks aim, transitions to unholstered
+

@@ -39,6 +39,7 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
     }
 
     update() {
+        /*
         let dt = this.scene.game.loop.delta
         this.targetVelocity = this.xInput * this.moveSpeed
 
@@ -47,6 +48,7 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
         //movement
         let force = this.moveForceX * stillModifier * dt
         this.approachVelocity('x', this.targetVelocity, force)
+        */
     }
 
     approachVelocity(axis, targetVelocity, force) {
@@ -82,8 +84,8 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
     }
 
     move(speedModifier, forceModifier, dt) {
-        //how to use:
         /*
+        how to use:
         set xinput, then call this function
         */
         this.targetVelocity = this.xInput * this.moveSpeed * speedModifier

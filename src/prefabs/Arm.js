@@ -39,10 +39,10 @@ class Arm extends Phaser.GameObjects.Sprite {
                 },
                 blendMode: 'ADD',
                 quantity: laserLength/10
-            }).setParticleScale(1.5)
+            }).setParticleScale(1.5).stop()
         }
         this.oldPos = [this.x, this.y]
-        console.log(this.laserLine)
+        //console.log(this.laserLine)
     }
 
     update(dt, direction, targetAngle) {

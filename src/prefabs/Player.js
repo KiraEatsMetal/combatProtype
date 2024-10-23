@@ -29,6 +29,9 @@ class Player extends BaseEntity {
         this.attackCooldown = 300
         this.attackPower = 3
 
+        this.attackDuration = 100
+        this.attackLasted = 0
+
         //state machine
         this.stateMachine = new StateMachine('idle', {
             idle: new PlayerIdleState(),
@@ -98,6 +101,9 @@ class Player extends BaseEntity {
         
         //cooldown attack
         this.attackCool = Math.max(0, this.attackCool - dt)
+
+        //cooldown attack duration
+        this.attackLasted = Math.max(0, this.attackLasted - dt)
     }
 }
 
@@ -189,14 +195,15 @@ class PlayerAttackState extends State {
     enter(scene, player) {
         player.spawnMeleeAttack(player.attackPower, player.attackId)
         player.attackCool = player.attackCooldown
-        player.move(false, 2, 2, 16)
+        player.attackLasted = player.attackDuration 
+        //player.move(false, 1, 8, 16)
     }
 
     execute(scene, player) {
-        let dt = scene.game.loop.delta
-        player.move(false, 0, 0.5, dt)
+        //let dt = scene.game.loop.delta
+        //player.move(false, 5, 0.5, dt)
 
-        if(player.attackCool == 0) {
+        if(player.attackLasted == 0) {
             player.stateMachine.transition('idle')
         }
     }
