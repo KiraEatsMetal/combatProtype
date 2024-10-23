@@ -4,6 +4,18 @@ class Enemy extends BaseEntity {
         this.arm = new Arm(scene, this, this.width/4, -this.height/4, 'arm', this.direction, [0, 0], this.width * 8, 'laserParticle')
 
         this.scene.time.delayedCall(1000, this.attack, null, this)
+
+
+        //state machine
+        this.stateMachine = new StateMachine('idle', {
+            idle: new GuardIdleState(),
+            move: new GuardMoveState(),
+            jump: new GuardJumpState(),
+            aiming: new GuardAimingState(),
+            aimed: new GuardAimedState(),
+            hurt: new GuardHurtState(),
+            die: new GuardDieState()
+        }, [this.scene, this])
     }
 
     update() {
@@ -45,5 +57,75 @@ class Enemy extends BaseEntity {
     flip() {
         this.arm.flip()
         super.flip()
+    }
+}
+
+class GuardIdleState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
+    }
+}
+
+class GuardMoveState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
+    }
+}
+
+class GuardJumpState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
+    }
+}
+
+class GuardAimingState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
+    }
+}
+
+class GuardAimedState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
+    }
+}
+
+class GuardHurtState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
+    }
+}
+
+class GuardDieState extends State {
+    enter(scene, guard) {
+
+    }
+
+    execute(scene, guard) {
+
     }
 }

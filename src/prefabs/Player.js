@@ -31,12 +31,13 @@ class Player extends BaseEntity {
 
         //state machine
         this.stateMachine = new StateMachine('idle', {
-            idle: new IdleState(),
-            move: new MoveState(),
-            jump: new JumpState(),
-            attack: new AttackState(),
-            defend: new DefendState(),
-            die: new DieState()
+            idle: new PlayerIdleState(),
+            move: new PlayerMoveState(),
+            jump: new PlayerJumpState(),
+            attack: new PlayerAttackState(),
+            defend: new PlayerDefendState(),
+            hurt: new PlayerHurtState(),
+            die: new PlayerDieState()
         }, [this.scene, this])
     }
 
@@ -82,11 +83,8 @@ class Player extends BaseEntity {
         } else {
             this.xInput = this.direction
         }
-        this.targetVelocity = this.xInput * this.moveSpeed * speedModifier
-        
-        let force = this.moveForceX * forceModifier * dt
-        this.approachVelocity('x', this.targetVelocity, force)
-        this.direction = (this.xInput == 0) ? this.direction: this.xInput
+
+        super.move(speedModifier, forceModifier, dt)
 
         let flipped = (this.direction == 1) ? false: true
         this.setFlipX(flipped)
@@ -101,7 +99,7 @@ class Player extends BaseEntity {
     }
 }
 
-class IdleState extends State {
+class PlayerIdleState extends State {
     enter(scene, player) {
 
     }
@@ -130,7 +128,7 @@ class IdleState extends State {
     }
 }
 
-class MoveState extends State {
+class PlayerMoveState extends State {
     enter(scene, player) {
 
     }
@@ -160,7 +158,7 @@ class MoveState extends State {
     }
 }
 
-class JumpState extends State {
+class PlayerJumpState extends State {
     enter(scene, player) {
         player.jump()
     }
@@ -185,7 +183,7 @@ class JumpState extends State {
     }
 }
 
-class AttackState extends State {
+class PlayerAttackState extends State {
     enter(scene, player) {
         player.spawnMeleeAttack(player.attackPower, player.attackId)
         player.attackCool = player.attackCooldown
@@ -201,7 +199,7 @@ class AttackState extends State {
     }
 }
 
-class DefendState extends State {
+class PlayerDefendState extends State {
     enter(scene, player) {
         player.defenceCool = player.defenceCooldown
     }
@@ -219,7 +217,17 @@ class DefendState extends State {
     }
 }
 
-class DieState extends State {
+class PlayerHurtState extends State {
+    enter(scene, player) {
+
+    }
+
+    execute(scene, player) {
+
+    }
+}
+
+class PlayerDieState extends State {
     enter(scene, player) {
 
     }

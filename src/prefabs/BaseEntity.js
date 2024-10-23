@@ -80,4 +80,12 @@ class BaseEntity extends Phaser.GameObjects.Sprite {
         let flipped = (this.direction == 1) ? false: true
         this.setFlipX(flipped)
     }
+
+    move(speedModifier, forceModifier, dt) {
+        this.targetVelocity = this.xInput * this.moveSpeed * speedModifier
+        
+        let force = this.moveForceX * forceModifier * dt
+        this.approachVelocity('x', this.targetVelocity, force)
+        this.direction = (this.xInput == 0) ? this.direction: this.xInput
+    }
 }
