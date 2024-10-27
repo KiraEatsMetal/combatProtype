@@ -5,7 +5,8 @@ class Enemy extends BaseEntity {
 
         //this.scene.time.delayedCall(1000, this.attack, null, this)
         //sight box
-        this.sightBox = scene.add.rectangle(x, y, this.width * 12, this.height * 2, 0xffffff, 0).setOrigin(0.25, 0.5)
+        this.sightBoxOrigins = {x: 0.25, y: 0.66}
+        this.sightBox = scene.add.rectangle(x, y, this.width * 12, this.height * 1.5, 0xffffff, 0).setOrigin(this.sightBoxOrigins.x, this.sightBoxOrigins.y)
         scene.physics.add.existing(this.sightBox)
         this.sightBox.owner = this
 
@@ -80,9 +81,9 @@ class Enemy extends BaseEntity {
         this.flipCool = this.flipCooldown
 
         if(this.direction == 1) {
-            this.sightBox.setOrigin(0.25, 0.5)
+            this.sightBox.setOrigin(this.sightBoxOrigins.x, this.sightBoxOrigins.y)
         } else {
-            this.sightBox.setOrigin(0.75, 0.5)
+            this.sightBox.setOrigin(1 - this.sightBoxOrigins.x, this.sightBoxOrigins.y)
         }
     }
 
@@ -117,7 +118,7 @@ class GuardIdleState extends State {
 
         if(guard.idleFlipCooldown == 0) {
             guard.flip()
-            guard.idleFlipCooldown = Phaser.Math.RND.integerInRange(5000, 6000)
+            guard.idleFlipCooldown = Phaser.Math.RND.integerInRange(4000, 5000)
         }
 
         //stand still

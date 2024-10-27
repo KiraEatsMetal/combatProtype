@@ -5,22 +5,35 @@
     },
     "activeFile": "firstLevel.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
             "scaleInDock": 1.5
         },
-        "firstLevel.tmx": {
-            "scale": 1.5242,
+        "C:/Users/kirae/Downloads/School/Year 3/Quarter 2/CMPM 120/phaser3/makeTheFakeFinal/assets/tiled/terrain.tmx": {
+            "scale": 0.458984375,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1042.842146699908,
-                "y": -349.6916415168613
+                "x": 2362.825531914894,
+                "y": 627.4723404255319
+            }
+        },
+        "C:/Users/kirae/Downloads/School/Year 3/Quarter 2/CMPM 120/phaser3/makeTheFakeFinal/assets/tiled/terrain.tmx#ground": {
+            "scaleInDock": 1
+        },
+        "firstLevel.tmx": {
+            "scale": 2.9626,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 765.0374670897185,
+                "y": 249.10551542563965
             }
         },
         "firstLevel.tmx#thirteenTile": {
-            "scaleInDock": 2
+            "scaleInDock": 2,
+            "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "C:/Users/kirae/Downloads/School/Quarter 1/ARTG 170B/phaser/combatProtype/assets",
@@ -36,7 +49,8 @@
     "project": "firstLevel.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "firstLevel.tmx"
+        "firstLevel.tmx",
+        "C:/Users/kirae/Downloads/School/Year 3/Quarter 2/CMPM 120/phaser3/makeTheFakeFinal/assets/tiled/terrain.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {

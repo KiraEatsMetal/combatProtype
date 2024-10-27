@@ -37,6 +37,7 @@ class Player extends BaseEntity {
             idle: new PlayerIdleState(),
             move: new PlayerMoveState(),
             jump: new PlayerJumpState(),
+            fall: new PlayerFallState(),
             attack: new PlayerAttackState(),
             defend: new PlayerDefendState(),
             hurt: new PlayerHurtState(),
@@ -115,14 +116,21 @@ class PlayerIdleState extends State {
     execute(scene, player) {
         let dt = scene.game.loop.delta
         player.move(true, 1, 0.5, dt)
-
+        //transition to jump or fall
+        if(Phaser.Input.Keyboard.JustDown(keyJUMP) && player.body.onFloor()) {
+            if(keyCROUCH.isDown) {
+                player.stateMachine.transition('fall');
+            } else {
+                player.stateMachine.transition('jump');
+            }
+        }
+        //transition to fall
+        if(!player.body.onFloor()) {
+            player.stateMachine.transition('fall')
+        }
         //transition to move
         if(player.xInput != 0) {
             player.stateMachine.transition('move')
-        }
-        //transition to jump
-        if(Phaser.Input.Keyboard.JustDown(keyJUMP) && player.body.touching.down) {
-            player.stateMachine.transition('jump');
         }
 
         //transition to defence
@@ -145,9 +153,17 @@ class PlayerMoveState extends State {
         let dt = scene.game.loop.delta
         player.move(true, 1, 1, dt)
 
-        //transition to jump
-        if(Phaser.Input.Keyboard.JustDown(keyJUMP) && player.body.touching.down) {
-            player.stateMachine.transition('jump');
+        //transition to jump or fall
+        if(Phaser.Input.Keyboard.JustDown(keyJUMP) && player.body.onFloor()) {
+            if(keyCROUCH.isDown) {
+                player.stateMachine.transition('fall');
+            } else {
+                player.stateMachine.transition('jump');
+            }
+        }
+        //transition to fall
+        if(!player.body.onFloor()) {
+            player.stateMachine.transition('fall')
         }
 
         //transition to defence
@@ -183,11 +199,37 @@ class PlayerJumpState extends State {
         if(Phaser.Input.Keyboard.JustDown(keyATTACK) && player.attackCool == 0) {
             player.stateMachine.transition('attack');
         }
+
+        //transition to fall
+        if(true) {
+            player.stateMachine.transition('fall')
+        }
+    }
+}
+
+class PlayerFallState extends State {
+    enter(scene, player) {
+    }
+
+    execute(scene, player) {
+        let dt = scene.game.loop.delta
+        player.move(true, 1, 0.5, dt)
+
+        scene.playerPlatformCollider.active = !keyCROUCH.isDown
+
+        //transition to defence
+        if(Phaser.Input.Keyboard.JustDown(keyDODGE) && player.defenceCool == 0) {
+            player.stateMachine.transition('defend');
+        }
+        //transition to attack
+        if(Phaser.Input.Keyboard.JustDown(keyATTACK) && player.attackCool == 0) {
+            player.stateMachine.transition('attack');
+        }
         
         //transition to idle
-        if(true) {
+        if(player.body.onFloor()) {
             player.stateMachine.transition('idle');
-        }   
+        }
     }
 }
 

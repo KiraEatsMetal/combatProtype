@@ -20,3 +20,5 @@ traversal is important
 mmaybe move terrain up so you can tune combat around it?
 most important part is limb swapping
 EVERYTHING should be in service of limb swapping
+
+WHEN EXPORTING: UNCHECK INFINITE FROM TILED MAP PROPERTIES

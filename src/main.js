@@ -5,8 +5,8 @@ Project: Combat Prototype
 
 let config = {
     type: Phaser.AUTO,
-    width: 1000,
-    height: 600,
+    width: 1024,
+    height: 512,
     render: {
         pixelArt:true,
     },
@@ -16,7 +16,7 @@ let config = {
             //debug: true
         }
     },
-    scene: [Play]
+    scene: [Load, Play]
 }
 
 let game = new Phaser.Game(config);
