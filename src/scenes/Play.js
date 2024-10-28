@@ -48,29 +48,19 @@ class Play extends Phaser.Scene {
         keyCROUCH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
         keyATTACK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J)
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
-
-        //temporary floor
-        //let floor = this.add.rectangle(game.config.width/2, game.config.height*2/3, game.config.width * 4, game.config.height/3, 0xffffff).setOrigin(0.5, 0)
-        //this.physics.add.existing(floor)
-        //floor.body.setImmovable(true)
-
-        //set up enemy
-        let enemy = new Enemy(this, game.config.width*10/20, game.config.height/2, 'enemy', null, 7, 80, 300)
+        
         //set up player
-        this.player = new Player(this, playerSpawn.x*globalScaleFactor, (playerSpawn.y-8*4)*globalScaleFactor, 'player', null, 10, 40, 600)
+        this.player = new Player(this, playerSpawn.x*globalScaleFactor, playerSpawn.y*globalScaleFactor-32, 'player', null, 100, 40, 600)
         
         //set camera bounds
         this.cameras.main.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
-        this.cameras.main.startFollow(this.player, true, 0.75, 0.75)
+        this.cameras.main.startFollow(this.player, true, 0.75, 0.75, 0, 0)
 
         //physics groups
         //ground collision
         this.collideGroundGroup = this.add.group()
         this.collideGroundGroup.add(this.player)
-        this.collideGroundGroup.add(enemy)
         this.collidePlatformGroup = this.add.group()
-        //this.collidePlatformGroup.add(this.player)
-        this.collidePlatformGroup.add(enemy)
 
         this.playerAttackGroup = this.add.group({
             runChildUpdate: true
@@ -84,17 +74,36 @@ class Play extends Phaser.Scene {
         //enemy sight boxes
         this.enemySightGroup = this.add.group()
 
+        //entity spawning
+        const objectLayer = map.getObjectLayer('Objects')
+        //for each object in object layer, grab its name and spawn the corresponding entity
+        for(let i = 0; i < objectLayer.objects.length; i++) {
+            //console.log(objectLayer.objects[i])
+            let currentObject = objectLayer.objects[i]
+            switch(currentObject.name) {
+                case 'enemySpawn':
+                    this.spawnEnemy(currentObject.x * globalScaleFactor, currentObject.y * globalScaleFactor, currentObject.properties)
+                break;
+                case 'doorSpawn':
+                    this.spawnDoor(currentObject.x * globalScaleFactor, currentObject.y * globalScaleFactor)
+                break;
+                default:
+                    console.log(currentObject.name)
+                break;
+            }
+        }
+
         //collision
+        //enemy collision
         this.physics.add.collider(this.collideGroundGroup, collisionLayer, this.handleCollision, null, this)
         this.physics.add.collider(this.collidePlatformGroup, platformLayer, this.handleCollision, null, this)
+        //enemy projectile collision
+        this.physics.add.collider(this.enemyAttackGroup, collisionLayer, this.handleProjectileSolidCollision, null, this)
         this.playerPlatformCollider = this.physics.add.collider(this.player, platformLayer, this.handleCollision, null, this)
-
-        //overlap
-        this.enemyGroup.add(enemy)
-        this.enemySightGroup.add(enemy.sightBox)
 
         //player and enemy push
         this.physics.add.overlap(this.player, this.enemyGroup, this.handleBodyOverlap, null, this)
+        this.physics.add.overlap(this.enemyGroup, this.enemyGroup, this.handleBodyOverlap, null, this)
         //spot player
         this.physics.add.overlap(this.player, this.enemySightGroup, this.handleSeenOverlap, null, this)
         //hit player
@@ -107,15 +116,35 @@ class Play extends Phaser.Scene {
         this.player.update(dt)
     }
 
+    spawnEnemy(x, y, properties) {
+        console.log(x, y)
+        console.log(properties)
+        let enemy = new Enemy(this, x, y - 32, 'enemy', null, 7, 80, 300)
+        this.collideGroundGroup.add(enemy)
+        this.collidePlatformGroup.add(enemy)
+        this.enemyGroup.add(enemy)
+        this.enemySightGroup.add(enemy.sightBox)
+    }
+
+    spawnDoor(x, y) {
+        console.log(x, y)
+    }
+
     handleCollision() {
         //collision does not let things overlap, could be used for running into a shield?
         //console.log('collide')
     }
 
+    handleProjectileSolidCollision(projectile, ground) {
+        projectile.destroy()
+    }
+
     handleBodyOverlap(player, enemy) {
         let dt = this.game.loop.delta
         let xDifference = player.x - enemy.x
-        let pushDir = Math.abs(xDifference) / xDifference
+        //DO NOT DIVIDE BY ZERO, keeping this as a hall of fame mistake
+        //let pushDir = Math.abs(xDifference) / xDifference
+        let pushDir = (xDifference > 0) ? 1: -1
         //how deep into the enemy is the edge of the player?
         let overlapAmount = Math.max(-1, 0.5 - (Math.abs(xDifference) - player.width/2) / (enemy.width))
 

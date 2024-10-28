@@ -215,6 +215,7 @@ class PlayerFallState extends State {
         let dt = scene.game.loop.delta
         player.move(true, 1, 0.5, dt)
 
+        //disable platform collision so the player can fall down when pressing down
         scene.playerPlatformCollider.active = !keyCROUCH.isDown
 
         //transition to defence
