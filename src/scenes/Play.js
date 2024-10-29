@@ -13,7 +13,8 @@ class Play extends Phaser.Scene {
 
     create() {
         //scaling factor
-        const globalScaleFactor = 2
+        this.globalScaleFactor = 2
+        const globalScaleFactor = this.globalScaleFactor
         //tilemap setup
         const map = this.add.tilemap('tilemapJSON1')
         //thirteenTile is the tileset's name in tiled
@@ -50,7 +51,7 @@ class Play extends Phaser.Scene {
         keyDODGE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
         
         //set up player
-        this.player = new Player(this, playerSpawn.x*globalScaleFactor, playerSpawn.y*globalScaleFactor-32, 'player', null, 100, 40, 600)
+        this.player = new Player(this, playerSpawn.x*globalScaleFactor, playerSpawn.y*globalScaleFactor-32, 'player', null, 10, 40, 600)
         
         //set camera bounds
         this.cameras.main.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
@@ -59,8 +60,11 @@ class Play extends Phaser.Scene {
         //physics groups
         //ground collision
         this.collideGroundGroup = this.add.group()
-        this.collideGroundGroup.add(this.player)
         this.collidePlatformGroup = this.add.group()
+
+        //block entities group
+        this.blockPlayerGroup = this.add.group()
+        this.blockEnemyGroup = this.add.group()
 
         this.playerAttackGroup = this.add.group({
             runChildUpdate: true
@@ -87,6 +91,9 @@ class Play extends Phaser.Scene {
                 case 'doorSpawn':
                     this.spawnDoor(currentObject.x * globalScaleFactor, currentObject.y * globalScaleFactor)
                 break;
+                case 'corpseSpawn':
+                    this.spawnCorpse(currentObject.x * globalScaleFactor, currentObject.y * globalScaleFactor)
+                break;
                 default:
                     console.log(currentObject.name)
                 break;
@@ -94,12 +101,21 @@ class Play extends Phaser.Scene {
         }
 
         //collision
-        //enemy collision
+        //player blocking entity collision
+        this.physics.add.collider(this.player, this.blockPlayerGroup, this.handleCollision, null, this)
+        //enemy blocking entity collision
+        this.physics.add.collider(this.enemyGroup, this.blockEnemyGroup, this.handleCollision, null, this)
+        //player and enemy ground collision
+        this.collideGroundGroup.add(this.player)
         this.physics.add.collider(this.collideGroundGroup, collisionLayer, this.handleCollision, null, this)
+
+        //player platform collision, sometimes toggled to let you drop down
+        this.playerPlatformCollider = this.physics.add.collider(this.player, platformLayer, this.handleCollision, null, this)
+        //enemy platform collision
         this.physics.add.collider(this.collidePlatformGroup, platformLayer, this.handleCollision, null, this)
+
         //enemy projectile collision
         this.physics.add.collider(this.enemyAttackGroup, collisionLayer, this.handleProjectileSolidCollision, null, this)
-        this.playerPlatformCollider = this.physics.add.collider(this.player, platformLayer, this.handleCollision, null, this)
 
         //player and enemy push
         this.physics.add.overlap(this.player, this.enemyGroup, this.handleBodyOverlap, null, this)
@@ -117,17 +133,38 @@ class Play extends Phaser.Scene {
     }
 
     spawnEnemy(x, y, properties) {
-        console.log(x, y)
-        console.log(properties)
-        let enemy = new Enemy(this, x, y - 32, 'enemy', null, 7, 80, 300)
+        //rebuild the array of properties and values into an object to pass to create enemy function
+        let spawnProperties = {}
+        for(let i = 0; i < properties.length; i++) {
+            spawnProperties[properties[i].name] = properties[i].value
+        }
+
+        let enemy = new Enemy(this, x, y - 32, 'enemy', null, 7, 80, 300, spawnProperties)
+        //tell game enemy goes in collection of things that stand on ground and platforms
         this.collideGroundGroup.add(enemy)
         this.collidePlatformGroup.add(enemy)
+        //add to enemy collision group for hit detection 
         this.enemyGroup.add(enemy)
+        //add to enemy sight group for spotted detection
         this.enemySightGroup.add(enemy.sightBox)
     }
 
     spawnDoor(x, y) {
-        console.log(x, y)
+        let door = new BreakableDoor(this, x, y - 24*this.globalScaleFactor, 'breakableDoor', null, 7).setScale(this.globalScaleFactor)
+        //add door to blocking group
+        this.blockPlayerGroup.add(door)
+        this.blockEnemyGroup.add(door)
+        //add door to enemy group so you can stab it
+        this.enemyGroup.add(door)
+    }
+
+    spawnCorpse(x, y) {
+        let corpse = new Corpse(this, x, y - 16*this.globalScaleFactor, 'corpse', null, 4).setScale(this.globalScaleFactor)
+        //tell game enemy goes in collection of things that stand on ground and platforms
+        this.collideGroundGroup.add(corpse)
+        this.collidePlatformGroup.add(corpse)
+        //add corpse to enemy group so you can stab it
+        this.enemyGroup.add(corpse)
     }
 
     handleCollision() {
@@ -142,23 +179,19 @@ class Play extends Phaser.Scene {
     handleBodyOverlap(player, enemy) {
         let dt = this.game.loop.delta
         let xDifference = player.x - enemy.x
-        //DO NOT DIVIDE BY ZERO, keeping this as a hall of fame mistake
-        //let pushDir = Math.abs(xDifference) / xDifference
         let pushDir = (xDifference > 0) ? 1: -1
         //how deep into the enemy is the edge of the player?
-        let overlapAmount = Math.max(-1, 0.5 - (Math.abs(xDifference) - player.width/2) / (enemy.width))
+        let overlapAmount = Math.max(-1, 0.5 - (Math.abs(xDifference) - player.width * player.scale/2) / (enemy.width * enemy.scale))
 
         //enemy pushes player
         let pushForce = enemy.pushForce
         let pushSpeed = enemy.pushSpeed
-        let finalVelocity = Math.max(player.body.velocity.x - pushForce * overlapAmount * dt, Math.min(pushSpeed * pushDir, player.body.velocity.x + pushForce * overlapAmount * dt))
-        player.body.setVelocityX(finalVelocity)
+        player.approachVelocity('x', pushSpeed * pushDir, pushForce * overlapAmount * dt)
 
         //player pushes enemy
         pushForce = player.pushForce
         pushSpeed = player.pushSpeed
-        finalVelocity = Math.max(enemy.body.velocity.x - pushForce * overlapAmount * dt, Math.min(pushSpeed * -pushDir, enemy.body.velocity.x + pushForce * overlapAmount * dt))
-        enemy.body.setVelocityX(finalVelocity)
+        enemy.approachVelocity('x', pushSpeed * -pushDir, pushForce * overlapAmount * dt)
     }
 
     handleSeenOverlap(player, sightBox) {
@@ -174,7 +207,9 @@ class Play extends Phaser.Scene {
             //new hit, take the damage
             enemy.approachVelocity('x', 1500 * attack.direction, 1000)
             enemy.approachVelocity('y', -1500, 400)
-            enemy.stateMachine.transition('hurt')
+            if(enemy.stateMachine) {
+                enemy.stateMachine.transition('hurt')
+            }
             enemy.changeHealth(-attack.power)
             enemy.rememberedHits.add(attack.id)
         }

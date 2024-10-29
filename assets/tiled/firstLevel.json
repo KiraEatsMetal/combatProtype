@@ -379,7 +379,7 @@
                         {
                          "name":"flipWhileIdle",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"",
@@ -424,13 +424,13 @@
                         {
                          "name":"flipWhileIdle",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":424,
+                 "x":496,
                  "y":512
                 }, 
                 {

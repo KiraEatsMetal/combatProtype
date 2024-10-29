@@ -24,11 +24,11 @@
             "scaleInDock": 1
         },
         "firstLevel.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 1,
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 699.3333333333333,
-                "y": 352
+                "x": 558.5,
+                "y": 492.33333333333326
             }
         },
         "firstLevel.tmx#thirteenTile": {

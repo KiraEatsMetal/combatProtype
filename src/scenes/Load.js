@@ -15,7 +15,7 @@ class Load extends Phaser.Scene {
     preload() {
         // loading bar
         // see: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/loader/
-        // thanks prof :)
+        // thanks prof altice :)
         let loadingBar = this.add.graphics()
         this.load.on('progress', (value) => {
             loadingBar.clear()                              // reset fill/line style
@@ -37,6 +37,8 @@ class Load extends Phaser.Scene {
         this.load.image('arm', 'entity/arm.png')
         this.load.image('bullet', 'entity/bullet.png')
         this.load.image('laserParticle', 'entity/laserParticle.png')
+        this.load.image('breakableDoor', 'entity/door.png')
+        this.load.image('corpse', 'entity/corpse.png')
         //tilemap
         this.load.image('tilemapImage', 'tiled/thirteenTile.png')
         this.load.tilemapTiledJSON('tilemapJSON1', 'tiled/firstLevel.json')

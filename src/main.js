@@ -13,13 +13,13 @@ let config = {
     physics:{
         default: 'arcade',
         arcade: {
-            //debug: true
+            debug: true
         }
     },
-    scene: [Load, Play]
+    scene: [Load, Title, Tutorial, Play, Credits]
 }
 
 let game = new Phaser.Game(config);
 
 //define keys
-let keyLEFT, keyRIGHT, keyJUMP, keyCROUCH, keyATTACK, keyDODGE
+let keyLEFT, keyRIGHT, keyJUMP, keyCROUCH, keyATTACK, keyDODGE, keyMORPH

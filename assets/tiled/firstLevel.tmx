@@ -1067,19 +1067,19 @@
     <property name="aggroGroup" type="int" value="0"/>
     <property name="approachPlayer" type="bool" value="true"/>
     <property name="direction" type="int" value="1"/>
-    <property name="flipWhileIdle" type="bool" value="false"/>
+    <property name="flipWhileIdle" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
   <object id="14" name="corpseSpawn" x="296" y="552">
    <point/>
   </object>
-  <object id="16" name="enemySpawn" x="424" y="512">
+  <object id="16" name="enemySpawn" x="496" y="512">
    <properties>
     <property name="aggroGroup" type="int" value="1"/>
     <property name="approachPlayer" type="bool" value="true"/>
     <property name="direction" type="int" value="-1"/>
-    <property name="flipWhileIdle" type="bool" value="false"/>
+    <property name="flipWhileIdle" type="bool" value="true"/>
    </properties>
    <point/>
   </object>

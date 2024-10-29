@@ -1,16 +1,17 @@
 class Enemy extends BaseEntity {
-    constructor(scene, x, y, texture, frame, health, pushForce = 0, pushSpeed = 0) {
+    constructor(scene, x, y, texture, frame, health, pushForce, pushSpeed, spawnProperties) {
         super(scene, x, y, texture, frame, health, pushForce, pushSpeed)
         this.arm = new Arm(scene, this, this.width/4, -this.height/4, 'arm', this.direction, [0, 0], this.width * 8, 'laserParticle')
 
         //this.scene.time.delayedCall(1000, this.attack, null, this)
         //sight box
-        this.sightBoxOrigins = {x: 0.25, y: 0.66}
-        this.sightBox = scene.add.rectangle(x, y, this.width * 12, this.height * 1.5, 0xffffff, 0).setOrigin(this.sightBoxOrigins.x, this.sightBoxOrigins.y)
+        this.sightBoxOrigins = {x: 0.125, y: 0.75}
+        this.sightBox = scene.add.rectangle(x, y, this.width * 12, this.height * 2, 0xffffff, 0).setOrigin(this.sightBoxOrigins.x, this.sightBoxOrigins.y)
         scene.physics.add.existing(this.sightBox)
         this.sightBox.owner = this
 
         //enemy params
+        this.doesIdleFlip = spawnProperties.flipWhileIdle
         this.idleFlipCooldown = 0
 
         this.flipCooldown = 100
@@ -39,6 +40,10 @@ class Enemy extends BaseEntity {
             die: new GuardDieState()
         }, [this.scene, this])
 
+        if(spawnProperties.direction < 0) {
+            this.flip()
+        }
+
         //debug
     }
 
@@ -54,7 +59,9 @@ class Enemy extends BaseEntity {
 
     die(){
         this.arm.destroy()
+        this.sightBox.destroy()
         this.stateMachine.transition('die')
+        this.scene.spawnCorpse(this.x, this.y)
         super.die()
     }
 
@@ -116,9 +123,9 @@ class GuardIdleState extends State {
         let aimAngle = -90
         guard.arm.update(dt, guard.direction, aimAngle)
 
-        if(guard.idleFlipCooldown == 0) {
+        if(guard.idleFlipCooldown == 0 && guard.doesIdleFlip) {
             guard.flip()
-            guard.idleFlipCooldown = Phaser.Math.RND.integerInRange(4000, 5000)
+            guard.idleFlipCooldown = Phaser.Math.RND.integerInRange(2000, 6000)
         }
 
         //stand still

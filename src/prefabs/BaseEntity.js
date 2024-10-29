@@ -1,5 +1,5 @@
 class BaseEntity extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, health, pushForce = 0, pushSpeed = 0) {
+    constructor(scene, x, y, texture, frame, health, pushForce, pushSpeed) {
         super(scene, x, y, texture, frame)
         //add to scene
         scene.add.existing(this)
