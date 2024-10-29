@@ -57,7 +57,8 @@ class Player extends BaseEntity {
     spawnMeleeAttack(power, attackId) {
         //console.log('spawning melee attack')
         if(this.scene){
-            this.attack = new Attack(this.scene, this.x + this.width * this.direction, this.y, this, 3, this.direction, this.attackId)
+            this.attack = new Attack(this.scene, this.x + this.width * this.scale.x * this.direction, this.y, this, 3, this.direction, this.attackId)
+            this.attack.setScale(this.scale)
             //console.log('spawned melee attack')
             this.scene.playerAttackGroup.add(this.attack)
             this.attackId += 1
@@ -69,8 +70,17 @@ class Player extends BaseEntity {
             this.attack.destroy()
         }
     }
+
+    changeHealth(value) {
+        super.changeHealth(value)
+        if(this.scene) {
+            this.scene.healthCounter.setText(this.currentHealth)
+        }
+    }
     
     die(){
+        this.scene.healthCounter.setText('0')
+        this.scene.delayedSceneStart('titleScene', 3000)
         this.stopMeleeAttack()
         this.stateMachine.transition('die');
         super.die()

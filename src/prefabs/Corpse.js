@@ -12,7 +12,7 @@ class Corpse extends BaseEntity {
     }
 
     die() {
-        this.scene.player.changeHealth(1)
+        this.scene.player.changeHealth(3)
         super.die()
     }
 }

@@ -52,6 +52,7 @@ class Play extends Phaser.Scene {
         
         //set up player
         this.player = new Player(this, playerSpawn.x*globalScaleFactor, playerSpawn.y*globalScaleFactor-32, 'player', null, 10, 40, 600)
+        this.player.setScale(this.globalScaleFactor)
         
         //set camera bounds
         this.cameras.main.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
@@ -94,6 +95,9 @@ class Play extends Phaser.Scene {
                 case 'corpseSpawn':
                     this.spawnCorpse(currentObject.x * globalScaleFactor, currentObject.y * globalScaleFactor)
                 break;
+                case 'levelEnd':
+                    this.spawnLevelEnd(currentObject.x * globalScaleFactor, currentObject.y * globalScaleFactor)
+                break;
                 default:
                     console.log(currentObject.name)
                 break;
@@ -126,6 +130,12 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.enemyAttackGroup, this.player, this.handleEnemyAttackOverlap, null, this)
         //hit enemy
         this.physics.add.overlap(this.playerAttackGroup, this.enemyGroup, this.handleAttackOverlap, null, this)
+
+        //health number
+        //create black menu background
+        this.blackbox = this.add.rectangle(96, game.config.height*1/12, 64, 48, 0x000000).setOrigin(0.5).setScrollFactor(0)
+        //score text
+        this.healthCounter = this.add.bitmapText(96, game.config.height*1/12, 'pixelU', this.player.currentHealth, 32).setOrigin(0.5).setScrollFactor(0)
     }
 
     update(timestep, dt) {
@@ -140,6 +150,7 @@ class Play extends Phaser.Scene {
         }
 
         let enemy = new Enemy(this, x, y - 32, 'enemy', null, 7, 80, 300, spawnProperties)
+        enemy.setScale(this.globalScaleFactor)
         //tell game enemy goes in collection of things that stand on ground and platforms
         this.collideGroundGroup.add(enemy)
         this.collidePlatformGroup.add(enemy)
@@ -165,6 +176,19 @@ class Play extends Phaser.Scene {
         this.collidePlatformGroup.add(corpse)
         //add corpse to enemy group so you can stab it
         this.enemyGroup.add(corpse)
+    }
+
+    spawnLevelEnd(x, y) {
+        this.levelEnd = this.add.rectangle(x, y, 8*6*this.globalScaleFactor, 8*8*this.globalScaleFactor, 0xffffff, 0).setOrigin(0.5, 1)
+        this.physics.add.existing(this.levelEnd)
+        //reach level end
+        this.physics.add.overlap(this.player, this.levelEnd, this.handleReachedEnd, null, this)
+    }
+
+    handleReachedEnd() {
+        console.log('reached end')
+        this.delayedSceneStart('creditsScene', 10000)
+        this.levelEnd.destroy()
     }
 
     handleCollision() {
@@ -226,5 +250,9 @@ class Play extends Phaser.Scene {
             player.changeHealth(-attack.power)
             player.rememberedHits.add(attack.id)
         }
+    }
+
+    delayedSceneStart(scene, delay) {
+        this.time.delayedCall(delay, () => this.scene.start(scene))
     }
 }

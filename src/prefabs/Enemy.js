@@ -1,7 +1,7 @@
 class Enemy extends BaseEntity {
     constructor(scene, x, y, texture, frame, health, pushForce, pushSpeed, spawnProperties) {
         super(scene, x, y, texture, frame, health, pushForce, pushSpeed)
-        this.arm = new Arm(scene, this, this.width/4, -this.height/4, 'arm', this.direction, [0, 0], this.width * 8, 'laserParticle')
+        this.arm = new Arm(scene, this, this.width*-0.25, -this.height*0.4, 'arm', this.direction, [0, 0.25], this.width * 8, 'laserParticle')
 
         //this.scene.time.delayedCall(1000, this.attack, null, this)
         //sight box
@@ -109,6 +109,11 @@ class Enemy extends BaseEntity {
 
         //cooldown damage stun
         this.hurtCool = Math.max(0, this.hurtCool - dt)
+    }
+
+    setScale(value) {
+        this.arm.setScale(value)
+        super.setScale(value)
     }
 }
 

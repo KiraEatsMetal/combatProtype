@@ -16,7 +16,7 @@ class Arm extends Phaser.GameObjects.Sprite {
         this.angularVelocity = 0
         this.armForce = 0.1
 
-        this.armLength = this.width * (1 - this.originX)
+        this.armLength = this.width * this.scale * (1 - this.originX)
         this.laserLength = laserLength
         this.laserAimAngle = 0
 

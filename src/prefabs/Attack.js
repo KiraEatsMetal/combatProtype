@@ -21,6 +21,10 @@ class Attack extends Phaser.GameObjects.Sprite {
         this.lifetime = 100
         this.lived = 0
 
+        if(player.direction < 1) {
+            this.setFlipX(true)
+        }
+
         //console.log('attack created: power, id, duration:: ' + this.power + ", " + this.id + ", " + this.lifetime)
     }
 
