@@ -39,6 +39,7 @@ class Load extends Phaser.Scene {
         this.load.image('laserParticle', 'entity/laserParticle.png')
         this.load.image('breakableDoor', 'entity/door.png')
         this.load.image('corpse', 'entity/corpse.png')
+        this.load.image('titleSplash', 'title.png')
         //tilemap
         this.load.image('tilemapImage', 'tiled/thirteenTile.png')
         this.load.tilemapTiledJSON('tilemapJSON1', 'tiled/firstLevel.json')

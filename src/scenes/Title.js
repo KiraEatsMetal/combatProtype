@@ -21,6 +21,7 @@ class Title extends Phaser.Scene {
         //can recieve data
         //text
         this.add.bitmapText(game.config.width/2, game.config.height*2/6 - 64, 'pixelU', 'CUT AWAY', 64).setOrigin(.5)
+        this.add.image(game.config.width*0.5, game.config.height*0.625, 'titleSplash').setOrigin(0.5).setScale(4)
 
         const menuTextOffset = {x: 1/6, y: 6/8}
 
