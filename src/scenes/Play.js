@@ -187,7 +187,7 @@ class Play extends Phaser.Scene {
 
     handleReachedEnd() {
         console.log('reached end')
-        this.delayedSceneStart('creditsScene', 10000)
+        this.delayedSceneStart('creditsScene', 3000)
         this.levelEnd.destroy()
     }
 
