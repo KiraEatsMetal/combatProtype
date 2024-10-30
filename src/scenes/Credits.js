@@ -30,7 +30,7 @@ class Credits extends Phaser.Scene {
         this.add.bitmapText(game.config.width*1/2, game.config.height*5/6 + 32, 'pixelU', 'Press [A] to go to title', 32).setOrigin(.5)
 
         //define keys
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
     }
 
     //do constantly
