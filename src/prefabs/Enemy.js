@@ -155,6 +155,9 @@ class GuardApproachState extends State {
             }
         } else {
             guard.xInput = (guard.x - scene.player.x > 0) ? -1: 1
+            if(guard.xInput != guard.direction && guard.flipCool == 0) {
+                guard.flip()
+            }
         }
         
         guard.move(1, 1, dt)
